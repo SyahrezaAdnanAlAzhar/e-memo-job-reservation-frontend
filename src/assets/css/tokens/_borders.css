@@ -1,0 +1,15 @@
+:root {
+    /* 4px */
+    --border-radius-sm: 0.25rem;
+    /* 8px */
+    --border-radius-md: 0.5rem;
+    /* 16px */
+    --border-radius-lg: 1rem;
+    
+    --border-width-xs: 1px;
+    --border-width-sm: 2px;
+    --border-width-base: 4px;
+    --border-width-md: 6px;
+    --border-width-lg: 8px;
+    --border-width-xl: 12px;
+}
