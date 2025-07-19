@@ -31,7 +31,7 @@ const baseClasses = `
   rounded-lg
   transition-all duration-200
   focus:outline-none focus:ring-2 focus:ring-opacity-75
-  hover:brightness-80 active:brightness-65
+
   disabled:opacity-50 disabled:cursor-not-allowed
 `;
 
@@ -51,24 +51,24 @@ const weightMap: Record<ButtonWeight, string> = {
 
 const colorMap: Record<ButtonColor, { solid: string; outline: string }> = {
   lightBlue: {
-    solid: 'bg-mainblue-1 text-mono-black hover:bg-mainblue-2',
-    outline: 'bg-mono-white text-mainblue-3 border-mainblue-4 hover:bg-mono-lightgrey',
+    solid: 'bg-mainblue-1 text-mono-black hover:bg-mainblue-2 hover:font-bold',
+    outline: 'bg-mono-white text-mainblue-3 border-mainblue-4 hover:bg-mono-lightgrey hover:font-bold',
   },
   darkBlue: {
-    solid: 'bg-mainblue-4 text-mono-white hover:bg-mainblue-5',
-    outline: 'bg-mono-white text-mainblue-6 border-mainblue-7 hover:bg-mono-lightgrey',
+    solid: 'bg-mainblue-4 text-mono-white hover:bg-mainblue-5 hover:font-bold',
+    outline: 'bg-mono-white text-mainblue-6 border-mainblue-7 hover:bg-mono-lightgrey hover:font-bold',
   },
   monochrome: {
-    solid: 'bg-mono-darkgrey text-mono-white hover:bg-mono-black',
-    outline: 'bg-mono-white text-mono-darkgrey border-mono-black hover:bg-mono-lightgrey',
+    solid: 'bg-mono-darkgrey text-mono-white hover:bg-mono-black hover:font-bold',
+    outline: 'bg-mono-white text-mono-darkgrey border-mono-black hover:bg-mono-lightgrey hover:font-bold',
   },
   success: {
-    solid: 'bg-add-green text-mono-white',
-    outline: 'bg-transparent text-add-green border-add-green hover:bg-add-green hover:text-mono-white',
+    solid: 'bg-add-green text-mono-white hover:font-bold',
+    outline: 'bg-mono-white text-add-green border-add-green hover:bg-add-green hover:text-mono-white hover:font-bold',
   },
   danger: {
-    solid: 'bg-add-red text-mono-white',
-    outline: 'bg-transparent text-add-red border-add-red hover:bg-add-red hover:text-mono-white',
+    solid: 'bg-add-red text-mono-white hover:font-bold',
+    outline: 'bg-mono-white text-add-red border-add-red hover:bg-add-red hover:text-mono-white hover:font-bold',
   },
   custom: { 
     solid: '',
