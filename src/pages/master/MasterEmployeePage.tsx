@@ -11,8 +11,11 @@ export default function MasterEmployeePage() {
 
     useEffect(() => {
         fetchOptions();
+    }, [fetchOptions]);
+
+    useEffect(() => {
         fetchEmployees();
-    }, [fetchEmployees, fetchOptions]);
+    }, [fetchEmployees]);
 
     return (
         <div className="space-y-6">

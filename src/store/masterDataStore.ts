@@ -74,6 +74,7 @@ export const useMasterDataStore = create<MasterDataStore>((set, get) => ({
     actions: {
         fetchDepartments: async () => {
             set({ status: 'loading' });
+            set({ areas: [] });
             try {
                 const response = await apiClient(`${HTTP_BASE_URL}/departments`, {
                 });

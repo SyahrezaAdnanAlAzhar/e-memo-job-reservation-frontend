@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import type { Employee, EmployeeOption } from '../../../../types/api';
 import { useMasterEmployee, useMasterEmployeeActions } from '../../../../store/masterEmployeeStore';
@@ -28,10 +28,19 @@ export const CreateEditEmployeeModal = ({ mode, employee }: CreateEditEmployeeMo
     });
 
     useEffect(() => {
-        if (open && formData.department_id) {
-            fetchAreasForDepartment(formData.department_id);
+        if (open) {
+            if (mode === 'edit' && employee?.department_id) {
+                fetchAreasForDepartment(employee.department_id);
+            }
+            setFormData({
+                npk: employee?.npk || '',
+                name: employee?.name || '',
+                department_id: employee?.department_id || null,
+                area_id: employee?.area_id?.Valid ? employee.area_id.Int64 : null,
+                employee_position_id: employee?.position.id || null,
+            });
         }
-    }, [open, formData.department_id, fetchAreasForDepartment]);
+    }, [open, mode, employee, fetchAreasForDepartment]);
 
     const handleChange = (field: keyof typeof formData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));

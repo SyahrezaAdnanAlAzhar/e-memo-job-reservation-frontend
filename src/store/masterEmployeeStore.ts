@@ -5,8 +5,7 @@ import { apiClient } from '../lib/apiClient';
 import { HTTP_BASE_URL } from '../config/api';
 
 interface EmployeeFilters {
-    name?: string;
-    npk?: string;
+    search?: string;
     department_id?: number | null;
     area_id?: number | null;
     employee_position_id?: number | null;
@@ -59,8 +58,7 @@ const initialPagination: PaginationState = {
 };
 
 const initialFilters: EmployeeFilters = {
-    name: '',
-    npk: '',
+    search: '',
     department_id: null,
     area_id: null,
     employee_position_id: null,
@@ -90,9 +88,13 @@ export const useMasterEmployeeStore = create<MasterEmployeeStore>((set, get) => 
 
             Object.entries(filters).forEach(([key, value]) => {
                 if (value !== null && value !== '') {
+                    if (key === 'name' || key === 'npk') return;
                     params.append(key, String(value));
                 }
             });
+            if (filters.search) {
+                params.append('search', filters.search);
+            }
 
             try {
                 const response = await apiClient(`/api/e-memo-job-reservation/employee?${params.toString()}`);

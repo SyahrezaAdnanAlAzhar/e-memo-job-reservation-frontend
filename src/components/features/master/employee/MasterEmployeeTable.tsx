@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useMasterEmployee, useMasterEmployeeActions } from '../../../../store/masterEmployeeStore';
 import { ToggleCell } from '../ToggleCell';
 import { CreateEditEmployeeModal } from './CreateEditEmployeeModal';
@@ -19,7 +20,13 @@ const TableHeader = () => (
 
 export const MasterEmployeeTable = () => {
     const { employees, options, status } = useMasterEmployee();
-    const { updateEmployee, updateEmployeeStatus } = useMasterEmployeeActions();
+    const { updateEmployee, updateEmployeeStatus, fetchAreasForDepartment } = useMasterEmployeeActions();
+
+    const toComboboxOption = (items: { id: number; name: string }[]) => items.map(i => ({ value: i.id, label: i.name }));
+
+    const positionOptions = useMemo(() => toComboboxOption(options.positions), [options.positions]);
+    const departmentOptions = useMemo(() => toComboboxOption(options.departments), [options.departments]);
+    const areaOptions = useMemo(() => toComboboxOption(options.areas), [options.areas]);
 
     return (
         <div className="space-y-4">
@@ -38,25 +45,29 @@ export const MasterEmployeeTable = () => {
                                 <td className="px-4 py-3">
                                     <RelationCell
                                         title={`Ganti Posisi untuk ${emp.name}`}
-                                        valueId={emp.position.id}
-                                        options={options.positions}
+                                        displayName={emp.position.name}
+                                        options={positionOptions}
+                                        currentValue={positionOptions.find(o => o.value === emp.position.id) || null}
                                         onSave={async (opt) => updateEmployee(emp.npk, { employee_position_id: opt?.value })}
                                     />
                                 </td>
                                 <td className="px-4 py-3">
                                     <RelationCell
                                         title={`Ganti Departemen untuk ${emp.name}`}
-                                        valueId={emp.department_id}
-                                        options={options.departments}
+                                        displayName={emp.department_name}
+                                        options={departmentOptions}
+                                        currentValue={departmentOptions.find(o => o.value === emp.department_id) || null}
                                         onSave={async (opt) => updateEmployee(emp.npk, { department_id: opt?.value })}
                                     />
                                 </td>
                                 <td className="px-4 py-3">
                                     <RelationCell
                                         title={`Ganti Area untuk ${emp.name}`}
-                                        valueId={emp.area_id.Valid ? emp.area_id.Int64 : null}
-                                        options={options.areas}
+                                        displayName={emp.area_name}
+                                        options={areaOptions}
+                                        currentValue={areaOptions.find(o => o.value === (emp.area_id.Valid ? emp.area_id.Int64 : null)) || null}
                                         onSave={async (opt) => updateEmployee(emp.npk, { area_id: opt?.value })}
+                                        onOpen={() => fetchAreasForDepartment(emp.department_id)}
                                     />
                                 </td>
                                 <td className="px-4 py-3 text-center">

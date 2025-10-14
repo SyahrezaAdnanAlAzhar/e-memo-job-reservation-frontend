@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { EditRelationModal } from './EditRelationModal';
 import { Pencil } from 'lucide-react';
 import type { ComboboxOption } from '../../../ui/Combobox';
@@ -6,33 +6,40 @@ import { Text } from '../../../ui/Text';
 
 interface RelationCellProps {
     title: string;
-    valueId: number | null;
-    options: { id: number; name: string }[];
+    displayName: string | null;
+    options: ComboboxOption[];
+    currentValue: ComboboxOption | null;
     onSave: (selectedOption: ComboboxOption | null) => Promise<boolean>;
+    onOpen?: () => void;
 }
 
-export const RelationCell = ({ title, valueId, options, onSave }: RelationCellProps) => {
+export const RelationCell = ({ title, displayName, options, currentValue, onSave, onOpen }: RelationCellProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const comboboxOptions = useMemo(() => options.map(o => ({ value: o.id, label: o.name })), [options]);
-    const currentValue = comboboxOptions.find(o => o.value === valueId) || null;
+    const handleOpen = () => {
+        if (onOpen) {
+            onOpen(); 
+        }
+        setIsModalOpen(true);
+    };
 
     return (
         <>
             <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleOpen}
                 className="group flex items-center gap-2 text-left"
             >
-                <Text>{currentValue?.label || '-'}</Text>
+                <Text>{displayName || '-'}</Text>
                 <Pencil size={14} className="text-mono-grey opacity-0 transition-opacity group-hover:opacity-100" />
             </button>
             <EditRelationModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={title}
-                options={comboboxOptions}
+                options={options}
                 currentValue={currentValue}
                 onSave={onSave}
+                
             />
         </>
     );
