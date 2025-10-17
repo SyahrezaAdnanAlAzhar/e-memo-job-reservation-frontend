@@ -8,8 +8,8 @@ const MASTER_LINKS = [
     { to: '/master/department', label: 'Department' },
     { to: '/master/area', label: 'Area' },
     { to: '/master/employee', label: 'Employee' },
-    { to: '/master/authorization', label: 'Authorization' },
-    { to: '/master/ticket', label: 'Ticket' },
+    // { to: '/master/authorization', label: 'Authorization' },
+    // { to: '/master/ticket', label: 'Ticket' },
 ];
 
 interface MasterEditDropdownProps {

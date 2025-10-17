@@ -15,6 +15,7 @@ import { useSyncDepartmentUrl } from '../hooks/useSyncDepartmentUrl';
 import { useActiveEditor } from '../store/realtimeStore';
 import { MessageBar } from '../components/ui/MessageBar';
 import { useAuthUser } from '../store/authStore';
+import { DateFilter } from '../components/features/filter/DateFilter';
 
 export default function TicketPage() {
     useSyncDepartmentUrl();
@@ -52,6 +53,9 @@ export default function TicketPage() {
                         <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
                         {!isMasterUser && (
                             <>
+                                <div className="flex justify-end">
+                                    <DateFilter />
+                                </div>
                                 <TicketSummary />
                                 <hr className="h-[3px] w-full bg-mono-light-grey/50 border-none" />
                                 <Can permission="CREATE_TICKET">

@@ -1,25 +1,29 @@
 import { useEffect } from 'react';
 import { TicketSummaryBar } from './TicketSummaryBar';
-import { TicketSummaryFilters } from './TicketSummaryFilters';
 import { MessageBar } from '../../ui/MessageBar';
 import { Text } from '../../ui/Text';
 import { useSelectedDepartmentId } from '../../../store/departmentStore';
-import { useTicketSummary, useTicketSummaryActions, useTicketSummaryFilters, useTicketSummaryStatus } from '../../../store/ticketSummaryStore';
+import { useTicketSummary, useTicketSummaryActions, useTicketSummaryStatus } from '../../../store/ticketSummaryStore';
+import { useTicketTableDateFilters } from '../../../store/ticketTableStore';
 
 export const TicketSummary = () => {
     const selectedDepartmentId = useSelectedDepartmentId();
-    const filters = useTicketSummaryFilters();
+    const dateFilters = useTicketTableDateFilters();
     const summaryData = useTicketSummary();
     const status = useTicketSummaryStatus();
     const { fetchSummaryData } = useTicketSummaryActions();
 
     useEffect(() => {
         if (selectedDepartmentId) {
-            fetchSummaryData({ departmentId: selectedDepartmentId });
+            fetchSummaryData({
+                departmentId: selectedDepartmentId,
+                month: dateFilters.month,
+                year: dateFilters.year,
+            });
         }
-    }, [selectedDepartmentId, filters, fetchSummaryData]);
+    }, [selectedDepartmentId, dateFilters, fetchSummaryData]);
 
-    const showYearWarning = filters.month !== null && filters.year === null;
+    const showYearWarning = dateFilters.month !== null && dateFilters.year === null;
 
     return (
         <div className="space-y-4">
@@ -32,9 +36,6 @@ export const TicketSummary = () => {
             <div className="flex flex-wrap items-center justify-between gap-12 rounded-lg px-24">
                 <div className="flex-grow">
                     <TicketSummaryBar data={summaryData} />
-                </div>
-                <div className="flex-shrink-0">
-                    <TicketSummaryFilters />
                 </div>
             </div>
 

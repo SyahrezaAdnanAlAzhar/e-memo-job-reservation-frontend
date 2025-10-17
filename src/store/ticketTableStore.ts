@@ -14,6 +14,11 @@ interface TicketTableSort {
     direction: 'asc' | 'desc';
 }
 
+interface DateFilters {
+    month: number | null;
+    year: number | null;
+}
+
 interface TicketTableState {
     tickets: Ticket[];
     status: 'idle' | 'loading' | 'success' | 'error';
@@ -21,6 +26,8 @@ interface TicketTableState {
     sort: TicketTableSort;
     filterOptions: FilterOptions;
     selectedFilters: SelectedFilters;
+    dateFilters: DateFilters;
+    oldestYear: number | null;
 }
 
 interface TicketTableActions {
@@ -36,6 +43,8 @@ interface TicketTableActions {
     setSelectedFilter: <K extends keyof SelectedFilters>(filterType: K, value: SelectedFilters[K]) => void;
     applyFilters: () => void;
     resetFilters: () => void;
+    fetchOldestYear: () => Promise<void>;
+    setDateFilter: (newFilters: Partial<DateFilters>) => void;
 }
 
 type TicketTableStore = TicketTableState & {
@@ -47,6 +56,11 @@ const initialSelectedFilters: SelectedFilters = {
     requestorDepartmentIds: [],
     requestorNpks: [],
     picNpks: [],
+};
+
+const initialDateFilters: DateFilters = {
+    month: null,
+    year: null,
 };
 
 const initialState: TicketTableState = {
@@ -66,6 +80,8 @@ const initialState: TicketTableState = {
         pics: [],
     },
     selectedFilters: initialSelectedFilters,
+    dateFilters: initialDateFilters,
+    oldestYear: null,
 }
 
 export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
@@ -74,7 +90,7 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
     actions: {
         fetchTickets: async ({ departmentId }) => {
             set({ status: 'loading' });
-            const { filters, sort, selectedFilters } = get();
+            const { filters, sort, selectedFilters, dateFilters } = get();
 
             const params = new URLSearchParams({
                 section_id: '2',
@@ -82,6 +98,8 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
                 sort_by: `${sort.by}_${sort.direction}`,
             });
 
+            if (dateFilters.year) params.append('year', String(dateFilters.year));
+            if (dateFilters.month) params.append('month', String(dateFilters.month));
             if (filters.search) params.append('search', filters.search);
             selectedFilters.statusIds.forEach(id => params.append('status_id', String(id)));
             selectedFilters.requestorDepartmentIds.forEach(id => params.append('requestor_department_id', String(id)));
@@ -227,8 +245,30 @@ export const useTicketTableStore = create<TicketTableStore>((set, get) => ({
         },
 
         resetFilters: () => {
-            set({ selectedFilters: initialSelectedFilters });
+            set({ selectedFilters: initialSelectedFilters, dateFilters: initialDateFilters });
             get().actions.applyFilters();
+        },
+        fetchOldestYear: async () => {
+            try {
+                const response = await apiClient(`${HTTP_BASE_URL}/reports/oldest-ticket`);
+                if (!response.ok) throw new Error('Failed to fetch oldest ticket year');
+                const { data } = await response.json();
+                const year = new Date(data.created_at).getFullYear();
+                set({ oldestYear: year });
+            } catch (error) {
+                console.error('Error fetching oldest year:', error);
+                set({ oldestYear: new Date().getFullYear() });
+            }
+        },
+
+        setDateFilter: (newFilters) => {
+            set((state) => ({
+                dateFilters: { ...state.dateFilters, ...newFilters },
+            }));
+            const selectedDepartmentId = useDepartmentStore.getState().selectedDepartmentId;
+            if (selectedDepartmentId) {
+                get().actions.fetchTickets({ departmentId: selectedDepartmentId });
+            }
         },
     },
 }));
@@ -240,3 +280,5 @@ export const useTicketTableSort = () => useTicketTableStore((state) => state.sor
 export const useTicketTableActions = () => useTicketTableStore((state) => state.actions);
 export const useTicketTableFilterOptions = () => useTicketTableStore((state) => state.filterOptions);
 export const useTicketTableSelectedFilters = () => useTicketTableStore((state) => state.selectedFilters);
+export const useTicketTableDateFilters = () => useTicketTableStore((state) => state.dateFilters);
+export const useTicketTableOldestYear = () => useTicketTableStore((state) => state.oldestYear);
