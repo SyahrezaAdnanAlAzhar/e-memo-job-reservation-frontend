@@ -2,10 +2,8 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStatus, useAuthUser, useAuthActions } from '../store/authStore';
 import { useDepartments, useDepartmentSelectors, useSelectedDepartmentId } from '../store/departmentStore';
 import { Button } from '../components/ui/Button';
-import MtmLogo from '../assets/Logo-MTM.svg?react';
 import { LogOut } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
-import "../App.css"
 import { useMemo } from 'react';
 import { useAuthorization } from '../hooks/useAuthorization';
 import { HistoryDropdown } from './HistoryDropdown';
@@ -80,7 +78,6 @@ export const Navbar = () => {
                             to={ticketUrl}
                             className="flex items-center gap-2 rounded-full bg-mono-white px-3 py-2 text-blue-mtm-700 shadow-sm"
                         >
-                            <MtmLogo className="h-6 w-auto" />
                             <span className="font-bold">Job Reservation</span>
                         </Link>
                     </div>
